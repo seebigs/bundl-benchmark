@@ -1,0 +1,22 @@
+{
+  "name": "bundl-benchmark",
+  "version": "1.0.0",
+  "description": "Run benchmark comparisons to test performance/speed",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seebigs/bundl-benchmark.git"
+  },
+  "author": "Chris Bigelow <seebigswork@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seebigs/bundl-benchmark/issues"
+  },
+  "dependencies": {
+    "benchmark": "^2.1.0",
+    "jsdom": "^9.4.1"
+  }
+}
