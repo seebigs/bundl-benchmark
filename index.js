@@ -14,12 +14,13 @@ function launchBenchmark (b, files, options, done) {
     }
 
     function onStart (benches, event) {
-        b.log.section(benches.currentTarget.name);
+        b.log();
+        b.log(benches.currentTarget.name);
     }
 
     function onCycle (event) {
         options.beforeEach();
-        b.log(String(event.target));
+        b.log.gray(String(event.target));
     }
 
     function onComplete () {
@@ -46,7 +47,7 @@ function launchBenchmark (b, files, options, done) {
                     b.log.green(fastestMsg);
                 }
             } else {
-                b.log(fastestMsg);
+                b.log.gray(fastestMsg);
             }
 
         } else {
