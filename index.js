@@ -3,7 +3,7 @@
  */
 
 var Benchmark = require('benchmark');
-var jsdom = require("jsdom").jsdom;
+var nodeAsBrowser = require('node-as-browser');
 
 function launchBenchmark (b, files, options, done) {
     options = options || {};
@@ -32,16 +32,25 @@ function launchBenchmark (b, files, options, done) {
             });
             var useColor = false;
             var margin = results[0].hz / results[1].hz;
-            if (margin < 2) {
-                margin = Math.round(margin*10) / 10;
+            var redWins = results[0].name.indexOf(options.redWhen) !== -1;
+
+            if (redWins) {
+                margins.push(-1 * margin);
             } else {
-                margin = Math.round(margin);
+                margins.push(margin);
+            }
+
+            var marginReadable = '';
+            if (margin < 2) {
+                marginReadable = Math.round(margin*10) / 10;
+            } else {
+                marginReadable = Math.round(margin);
                 useColor = true;
             }
 
-            var fastestMsg = 'Fastest is: ' + results[0].name + (margin ? ' by ' + margin + 'x' : '');
+            var fastestMsg = 'Fastest is: ' + results[0].name + (marginReadable ? ' by ' + marginReadable + 'x' : '');
             if (useColor) {
-                if (results[0].name.indexOf(options.redWhen) !== -1) {
+                if (redWins) {
                     b.log.red(fastestMsg);
                 } else {
                     b.log.green(fastestMsg);
@@ -55,6 +64,12 @@ function launchBenchmark (b, files, options, done) {
         }
 
         if (--activeSuites <= 0) {
+            var marginsLen = margins.length;
+            var marginsSum = 0;
+            while (marginsLen--) {
+                marginsSum += margins[marginsLen];
+            }
+            b.log('\nAverage margin: ' + Math.round(marginsSum / margins.length) + 'x');
             done();
         }
     }
@@ -64,9 +79,7 @@ function launchBenchmark (b, files, options, done) {
     }
 
     // setup browser environment
-    var doc = jsdom('', {});
-    window = doc.defaultView;
-    document = window.document;
+    nodeAsBrowser.init(global);
 
     // prep suites
     var suites = [];
@@ -92,6 +105,7 @@ function launchBenchmark (b, files, options, done) {
 
     // run suites
     var activeSuites = suites.length;
+    var margins = [];
     if (activeSuites) {
         suites.forEach(function (s) {
             s.run();

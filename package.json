@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "benchmark": "^2.1.0",
-    "jsdom": "^9.4.1"
+    "node-as-browser": "^1.0.0"
   }
 }
