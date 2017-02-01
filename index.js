@@ -120,13 +120,13 @@ function launchBenchmark (b, files, options, done) {
 module.exports = function (options) {
     options = options || {};
 
-    function benchmarkAll (files, done) {
+    function all (resources, srcFiles, done) {
         var bundl = this;
-        launchBenchmark(bundl, files, options, done);
+        launchBenchmark(bundl, srcFiles, options, done);
     }
 
     return {
-        all: benchmarkAll
+        all: all
     };
 
 };
