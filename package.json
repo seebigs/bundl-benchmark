@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "benchmark": "^2.1.0",
-    "node-as-browser": "^1.0.0"
+    "node-as-browser": "^1.4.0"
   }
 }

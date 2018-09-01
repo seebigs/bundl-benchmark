@@ -5,7 +5,7 @@
 var Benchmark = require('benchmark');
 var nodeAsBrowser = require('node-as-browser');
 
-function launchBenchmark (b, files, options, done) {
+function launchBenchmark (bundl, files, options, done) {
     options = options || {};
     options.beforeEach = options.beforeEach || function () {};
 
@@ -14,13 +14,13 @@ function launchBenchmark (b, files, options, done) {
     }
 
     function onStart (benches, event) {
-        b.log();
-        b.log(benches.currentTarget.name);
+        bundl.log();
+        bundl.log(benches.currentTarget.name);
     }
 
     function onCycle (event) {
         options.beforeEach();
-        b.log.gray(String(event.target));
+        bundl.log.gray(String(event.target));
     }
 
     function onComplete () {
@@ -51,16 +51,16 @@ function launchBenchmark (b, files, options, done) {
             var fastestMsg = 'Fastest is: ' + results[0].name + (marginReadable ? ' by ' + marginReadable + 'x' : '');
             if (useColor) {
                 if (redWins) {
-                    b.log.red(fastestMsg);
+                    bundl.log.red(fastestMsg);
                 } else {
-                    b.log.green(fastestMsg);
+                    bundl.log.green(fastestMsg);
                 }
             } else {
-                b.log.gray(fastestMsg);
+                bundl.log.gray(fastestMsg);
             }
 
         } else {
-            b.log.red('No winner found');
+            bundl.log.red('No winner found');
         }
 
         if (--activeSuites <= 0) {
@@ -69,13 +69,13 @@ function launchBenchmark (b, files, options, done) {
             while (marginsLen--) {
                 marginsSum += margins[marginsLen];
             }
-            b.log('\nAverage margin: ' + Math.round(marginsSum / margins.length) + 'x');
+            bundl.log('\nAverage margin: ' + Math.round(marginsSum / margins.length) + 'x');
             done();
         }
     }
 
     function onError (event) {
-        b.log.error('Benchmark: ' + event.target.name + '\n' + event.target.error);
+        bundl.log.error('Benchmark: ' + event.target.name + '\n' + event.target.error);
     }
 
     // setup browser environment
@@ -112,7 +112,7 @@ function launchBenchmark (b, files, options, done) {
         });
 
     } else {
-        b.log.error('No benchmarks added');
+        bundl.log.error('No benchmarks added');
     }
 }
 
@@ -120,13 +120,14 @@ function launchBenchmark (b, files, options, done) {
 module.exports = function (options) {
     options = options || {};
 
-    function all (resources, srcFiles, done) {
+    function benchmark (srcFiles, done) {
         var bundl = this;
         launchBenchmark(bundl, srcFiles, options, done);
     }
 
     return {
-        all: all
+        name: 'benchmark',
+        stage: 'src',
+        exec: benchmark,
     };
-
 };
